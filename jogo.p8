@@ -9,8 +9,11 @@ actor.sprt = 5 -- Sprite starting frame
 actor.tmr = 1 -- Internal timer for managing animation
 actor.flp = false -- Used for flipping the sprite
 actor.jump = false -- jump
+actor.jump_right = false
+actor.jump_left = false
 actor.jump_tmr = 0
 
+<<<<<<< HEAD
 ship = {} -- Initalize the sprite object 
 ship.x = 10 -- Sprites x position
 ship.y = 46 -- Sprites y position
@@ -23,6 +26,8 @@ apartm.x0 = 10 -- X starting position of the space the sprite will be in
 apartm.y0 = 10 -- Y starting position of the space the sprite will be in
 apartm.x1 = 100 -- Determines the width (100 - 10 = 90)
 apartm.y1 = 60 -- Determines the height of the space (40 - 10 = 30)
+=======
+>>>>>>> 18f1485a949b690b658c79efa3ae92cbf9e020f9
 
 current_lvl = {} -- Holder for the level counter
 current_lvl.number = 0 -- Initialize the level at 0
@@ -31,7 +36,7 @@ function lvl_change(ln)
 	current_lvl.number = ln
 	if current_lvl.number==1 then -- Code for only level 1
 		actor.x = 10 -- Start sprite in the center of the level area
-		actor.y = apartm.y1 - 15 -- Put sprite at the base of the level
+		actor.y = 100 -- Put sprite at the base of the level
 	end
 end
 
@@ -45,6 +50,7 @@ end
 function move_actor(bl, br) -- Sprite user input receiver, params are the left and right boundaries 	
 	
 	actor.tmr = actor.tmr+1 -- Interal timer to activate waiting animations
+	
 	--[[
 	if actor.tmr>=10 then -- After 1/3 of sec, jump to sprite 6
 		actor.sprt = 6
@@ -59,11 +65,17 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 	if actor.jump then
 		actor.sprt = 8
 		actor.jump_tmr +=1
-		if actor.jump_tmr >=10 then
-			actor.sprt = 9
-			actor.y+=1.2
+		actor.sprt = 9
+		if actor.jump_tmr <=10 then
+			actor.y-=3	
+			if jump_right == true then
+				actor.x=-3	
+				print("salto diagonal")
+			end	
+		elseif 	actor.jump_tmr >10 and actor.jump_tmr <=20 then
+			actor.y+=3		
 		end	
-		if actor.jump_tmr >15 then
+		if actor.jump_tmr >20 then
 			actor.jump = false
 			actor.jump_tmr = 0
 		end	
@@ -94,9 +106,13 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 				actor.sprt = 5
 			end
 		end
-	elseif btn(2) then			
-		if actor.jump_tmr == 0 and actor.jump == false then
-			actor.y-=6
+	elseif btn(2) then		
+		if actor.jump_tmr == 0 and actor.jump == false then		
+			if btn(1) then
+				actor.jump_right =true
+			elseif  btn(0)
+				actor.jump_left = true 	
+			end	
 			actor.jump = true
 		end
         --actor.tmr = 0  
@@ -116,34 +132,41 @@ end
 
 function draw_lvl() -- Abstracting the built in draw function to render the required level
 	if current_lvl.number==1 then 
+<<<<<<< HEAD
 		rectfill(apartm.x0,apartm.y0,apartm.x1,apartm.y1, 3) -- Create a simple grey block to illustrate level boundries 
+=======
+>>>>>>> 18f1485a949b690b658c79efa3ae92cbf9e020f9
 	end
 end
 
-
-
 function _update() -- Main game loop called at 30fps
 	if current_lvl.number==1 then -- Define the boundries for level 1
-		bnd_left = apartm.x0
-		bnd_right = apartm.x1 - 14
+		bnd_left = 0
+		bnd_right = 120
 	end
 	
 	move_actor(bnd_left, bnd_right) -- Call to user input function
 end
 
 function _draw() -- Write pixels to view at 30fps
+<<<<<<< HEAD
 	cls() -- Clear thew screen
 	--draw_lvl() -- Level rendering
 	map( 0, 0, 0, 38, 16, 8, 1)
 	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- Draw the main sprite with the modified sprite properties 
 	spr(ship.sprt, ship.x, ship.y, 3, 2, ship.flp) 	-- Draw ship sprite	
 	
+=======
+	--cls() -- Clear thew screen
+	draw_lvl() -- Level rendering
+	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- Draw the main sprite with the modified sprite properties 	
+>>>>>>> 18f1485a949b690b658c79efa3ae92cbf9e020f9
 end
 
 --Selecting Ambient Sound
 function initSound()
 	if current_lvl.number == 1 then
-		music(5, 300)
+		--music(5, 300)
 	end
 end
 
