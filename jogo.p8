@@ -8,6 +8,7 @@ actor.y = 0 -- Sprites y position
 actor.sprt = 0 -- Sprite starting frame
 actor.tmr = 1 -- Internal timer for managing animation
 actor.flp = false -- Used for flipping the sprite
+actor.jump = false -- jump
 
 apartm = {} -- Initialize the level
 apartm.x0 = 10 -- X starting position of the space the sprite will be in
@@ -33,6 +34,7 @@ end
 	
 -- character move function
 function move_actor(bl, br) -- Sprite user input receiver, params are the left and right boundaries 
+	--[[
 	actor.tmr = actor.tmr+1 -- Interal timer to activate waiting animations
 	if actor.tmr>=10 then -- After 1/3 of sec, jump to sprite 6
 		actor.sprt = 6
@@ -43,7 +45,7 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 	if actor.tmr >= 62 then -- And jump back to frame 6, 
 		actor.sprt = 6
 		actor.tmr = 0 -- Restart timer
-	end	
+	end	]]
 
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
@@ -67,6 +69,11 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 				actor.sprt = 0
 			end
 		end
+	elseif btn(2) then
+        actor.y-=4  
+        --actor.tmr = 0  
+    elseif btn(3) then
+        actor.y+=1.5     
 	end
 end
 
