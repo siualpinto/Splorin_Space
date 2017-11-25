@@ -5,7 +5,7 @@ __lua__
 actor = {} -- Initalize the sprite object 
 actor.x = 0 -- Sprites x position
 actor.y = 0 -- Sprites y position
-actor.sprt = 0 -- Sprite starting frame
+actor.sprt = 5 -- Sprite starting frame
 actor.tmr = 1 -- Internal timer for managing animation
 actor.flp = false -- Used for flipping the sprite
 actor.jump = false -- jump
@@ -22,7 +22,7 @@ current_lvl.number = 0 -- Initialize the level at 0
 function lvl_change(ln)
 	current_lvl.number = ln
 	if current_lvl.number==1 then -- Code for only level 1
-		actor.x = ((apartm.x0 + apartm.x1) /2) - 8 -- Start sprite in the center of the level area
+		actor.x = 10 -- Start sprite in the center of the level area
 		actor.y = apartm.y1 - 15 -- Put sprite at the base of the level
 	end
 end
@@ -33,9 +33,9 @@ function _init()
 end
 	
 -- character move function
-function move_actor(bl, br) -- Sprite user input receiver, params are the left and right boundaries 
-	--[[
+function move_actor(bl, br) -- Sprite user input receiver, params are the left and right boundaries 	
 	actor.tmr = actor.tmr+1 -- Interal timer to activate waiting animations
+	--[[
 	if actor.tmr>=10 then -- After 1/3 of sec, jump to sprite 6
 		actor.sprt = 6
 	end
@@ -46,27 +46,34 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 		actor.sprt = 6
 		actor.tmr = 0 -- Restart timer
 	end	]]
-
+	if actor.timer >=60
+		actor.tmr=0
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
 			actor.flp = false -- Set deafult direction of sprite 
 			actor.x+=1.5 -- Progress the sprite along the x axis
-			actor.sprt += sprite_animator(2) -- Animate the sprite by calling the sprite_animator function
-			actor.tmr = 0 -- Reset internal timer
-
-			if actor.sprt>=6 then -- Set the max number frames to animate
-				actor.sprt = 0 -- Reset the frame number, creating a loop
+			actor.sprt += sprite_animator(1) -- Animate the sprite by calling the sprite_animator function
+			--actor.tmr = 0 -- Reset internal timer
+			if actor.tmr == 60 then
+				actor.sprt = 5
+			elseif actor.tmr == 30 then
+				actor.sprt = 6
+			elseif actor.tmr == 0 then
+				actor.sprt = 7	
+			end	
+			if actor.sprt>=7 then -- Set the max number frames to animate
+				actor.sprt = 5 -- Reset the frame number, creating a loop
 			end
 		end
 	elseif btn(0) then
 		if actor.x > bl then
 			actor.flp = true -- Flip the direction of the sprite
 			actor.x-=1.5 -- Move the sprite to the left
-			actor.sprt+=sprite_animator(2)
-			actor.tmr = 0
+			actor.sprt+=sprite_animator(1)
+			--actor.tmr = 0
 
-			if actor.sprt>=6 then
-				actor.sprt = 0
+			if actor.sprt>=7 then
+				actor.sprt = 5
 			end
 		end
 	elseif btn(2) then
