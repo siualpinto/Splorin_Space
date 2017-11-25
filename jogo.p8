@@ -13,21 +13,6 @@ actor.jump_right = false
 actor.jump_left = false
 actor.jump_tmr = 0
 
-<<<<<<< HEAD
-ship = {} -- Initalize the sprite object 
-ship.x = 10 -- Sprites x position
-ship.y = 46 -- Sprites y position
-ship.sprt = 32 -- Sprite starting frame
-ship.flp = false -- Used for flipping the sprite
-ship.tmr = 1 -- Internal timer for managing animation
-
-apartm = {} -- Initialize the level
-apartm.x0 = 10 -- X starting position of the space the sprite will be in
-apartm.y0 = 10 -- Y starting position of the space the sprite will be in
-apartm.x1 = 100 -- Determines the width (100 - 10 = 90)
-apartm.y1 = 60 -- Determines the height of the space (40 - 10 = 30)
-=======
->>>>>>> 18f1485a949b690b658c79efa3ae92cbf9e020f9
 
 current_lvl = {} -- Holder for the level counter
 current_lvl.number = 0 -- Initialize the level at 0
@@ -132,10 +117,7 @@ end
 
 function draw_lvl() -- Abstracting the built in draw function to render the required level
 	if current_lvl.number==1 then 
-<<<<<<< HEAD
 		rectfill(apartm.x0,apartm.y0,apartm.x1,apartm.y1, 3) -- Create a simple grey block to illustrate level boundries 
-=======
->>>>>>> 18f1485a949b690b658c79efa3ae92cbf9e020f9
 	end
 end
 
@@ -149,18 +131,9 @@ function _update() -- Main game loop called at 30fps
 end
 
 function _draw() -- Write pixels to view at 30fps
-<<<<<<< HEAD
-	cls() -- Clear thew screen
-	--draw_lvl() -- Level rendering
-	map( 0, 0, 0, 38, 16, 8, 1)
-	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- Draw the main sprite with the modified sprite properties 
-	spr(ship.sprt, ship.x, ship.y, 3, 2, ship.flp) 	-- Draw ship sprite	
-	
-=======
 	--cls() -- Clear thew screen
 	draw_lvl() -- Level rendering
 	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- Draw the main sprite with the modified sprite properties 	
->>>>>>> 18f1485a949b690b658c79efa3ae92cbf9e020f9
 end
 
 --Selecting Ambient Sound
