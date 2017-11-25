@@ -47,24 +47,23 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 		actor.sprt = 6
 		actor.tmr = 0 -- Restart timer
 	end	]]
-	if actor.timer >=60 then
+	if actor.tmr >= 180 then
 		actor.tmr=0
+	end	
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
 			actor.flp = false -- Set deafult direction of sprite 
 			actor.x+=1.5 -- Progress the sprite along the x axis
 			actor.sprt += sprite_animator(1) -- Animate the sprite by calling the sprite_animator function
 			--actor.tmr = 0 -- Reset internal timer
-			if actor.tmr==60 then
+			if actor.tmr==0 then
 				actor.sprt = 5
-			elseif actor.tmr==30 then
+			elseif actor.tmr==60 then
 				actor.sprt = 6
-			elseif actor.tmr==0 then
+			elseif actor.tmr==180 then
 				actor.sprt = 7	
 			end	
-			if actor.sprt>=7 then -- Set the max number frames to animate
-				actor.sprt = 5 -- Reset the frame number, creating a loop
-			end
+		
 		end
 	elseif btn(0) then
 		if actor.x > bl then
@@ -82,7 +81,6 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
         --actor.tmr = 0  
     elseif btn(3) then
         actor.y+=1.5     
-	end
 	else
 		actor.sprt = 5
 	end
