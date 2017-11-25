@@ -83,6 +83,10 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
     elseif btn(3) then
         actor.y+=1.5     
 	end
+	else
+		actor.sprt = 5
+	end
+
 end
 
 function sprite_animator(x) -- This function receives the number of frames to animate by, increaments by the supplied amount and returns the value back calling user input function
