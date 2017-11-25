@@ -21,7 +21,7 @@ function lvl_change(ln)
 	current_lvl.number = ln
 	if current_lvl.number==1 then -- Code for only level 1
 		actor.x = 10 -- Start sprite in the center of the level area
-		actor.y = 100 -- Put sprite at the base of the level
+		actor.y = 90 -- Put sprite at the base of the level
 	end
 end
 
@@ -51,12 +51,13 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 		actor.sprt = 8
 		actor.jump_tmr +=1
 		actor.sprt = 9
+		--[[if actor.jump_right == true then
+			actor.x=-3
+			actor.y-=3
+			print("teste")	
+		end	]]
 		if actor.jump_tmr <=10 then
 			actor.y-=3	
-			if jump_right == true then
-				actor.x=-3	
-				print("salto diagonal")
-			end	
 		elseif 	actor.jump_tmr >10 and actor.jump_tmr <=20 then
 			actor.y+=3		
 		end	
@@ -66,9 +67,11 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 		end	
 	end	
 
-
-
-	if btn(1) then -- Built in function that receives button input, in this case the right arrow
+	if btn()==6 then
+			actor.jump_right =true
+	elseif btn()==5 then
+			actor.jump_left =true	
+	elseif btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
 			actor.flp = false -- Set deafult direction of sprite 
 			actor.x+=1.5 -- Progress the sprite along the x axis
@@ -90,14 +93,9 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 			if actor.sprt>=7 then
 				actor.sprt = 5
 			end
-		end
-	elseif btn(2) then		
-		if actor.jump_tmr == 0 and actor.jump == false then		
-			if btn(1) then
-				actor.jump_right =true
-			elseif  btn(0)
-				actor.jump_left = true 	
-			end	
+		end		
+	elseif btn(2) then	
+		if actor.jump_tmr == 0 and actor.jump == false then				
 			actor.jump = true
 		end
         --actor.tmr = 0  
@@ -130,9 +128,13 @@ function _update() -- Main game loop called at 30fps
 end
 
 function _draw() -- Write pixels to view at 30fps
-	--cls() -- Clear thew screen
+	cls() -- Clear thew screen
 	draw_lvl() -- Level rendering
 	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- Draw the main sprite with the modified sprite properties 	
+	
+	print("x "..actor.x,0,120,7)
+	print("y "..actor.y,64,120,7)
+	
 end
 
 function initSound()
@@ -140,6 +142,8 @@ function initSound()
 		--music(5, 300)
 	end
 end
+
+
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000
