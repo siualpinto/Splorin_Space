@@ -9,12 +9,13 @@ actor.sprt = 5 -- Sprite starting frame
 actor.tmr = 1 -- Internal timer for managing animation
 actor.flp = false -- Used for flipping the sprite
 actor.jump = false -- jump
+actor.jump_tmr = 0
 
 apartm = {} -- Initialize the level
 apartm.x0 = 10 -- X starting position of the space the sprite will be in
 apartm.y0 = 10 -- Y starting position of the space the sprite will be in
 apartm.x1 = 100 -- Determines the width (100 - 10 = 90)
-apartm.y1 = 40 -- Determines the height of the space (40 - 10 = 30)
+apartm.y1 = 60 -- Determines the height of the space (40 - 10 = 30)
 
 current_lvl = {} -- Holder for the level counter
 current_lvl.number = 0 -- Initialize the level at 0
@@ -47,24 +48,33 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 	if actor.tmr >= 62 then -- And jump back to frame 6, 
 		actor.sprt = 6
 		actor.tmr = 0 -- Restart timer
-	end	]]
-	if actor.tmr >= 180 then
-		actor.tmr=0
+	end	]]	
+	if actor.jump then
+		actor.sprt = 8
+		actor.jump_tmr +=1
+		if actor.jump_tmr >=5 then
+			actor.sprt = 9
+			actor.y+=1.2
+		end	
+		if actor.jump_tmr >15 then
+			actor.jump = false
+			actor.jump_tmr = 0
+		end	
 	end	
+
+
+
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
 			actor.flp = false -- Set deafult direction of sprite 
 			actor.x+=1.5 -- Progress the sprite along the x axis
 			actor.sprt += sprite_animator(1) -- Animate the sprite by calling the sprite_animator function
 			--actor.tmr = 0 -- Reset internal timer
-			if actor.tmr==0 then
-				actor.sprt = 5
-			elseif actor.tmr==60 then
-				actor.sprt = 6
-			elseif actor.tmr==180 then
-				actor.sprt = 7	
-			end	
-		
+			if actor.sprt>=7 then -- Set the max number frames to animate
+				actor.sprt = 5 -- Reset the frame number, creating a loop
+			end
+			
+			
 		end
 	elseif btn(0) then
 		if actor.x > bl then
@@ -78,10 +88,13 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 			end
 		end
 	elseif btn(2) then
-        actor.y-=4  
+		actor.y-=4	
+		if actor.jump_tmr == 0 and actor.jump == false then
+			actor.jump = true
+		end
         --actor.tmr = 0  
     elseif btn(3) then
-        actor.y+=1.5     
+        actor.y+=2     
 	else
 		actor.sprt = 5
 	end
