@@ -34,6 +34,7 @@ end
 	
 -- character move function
 function move_actor(bl, br) -- Sprite user input receiver, params are the left and right boundaries 	
+	
 	actor.tmr = actor.tmr+1 -- Interal timer to activate waiting animations
 	--[[
 	if actor.tmr>=10 then -- After 1/3 of sec, jump to sprite 6
@@ -46,7 +47,7 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 		actor.sprt = 6
 		actor.tmr = 0 -- Restart timer
 	end	]]
-	if actor.timer >=60
+	if actor.timer >=60 then
 		actor.tmr=0
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
@@ -54,11 +55,11 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 			actor.x+=1.5 -- Progress the sprite along the x axis
 			actor.sprt += sprite_animator(1) -- Animate the sprite by calling the sprite_animator function
 			--actor.tmr = 0 -- Reset internal timer
-			if actor.tmr == 60 then
+			if actor.tmr==60 then
 				actor.sprt = 5
-			elseif actor.tmr == 30 then
+			elseif actor.tmr==30 then
 				actor.sprt = 6
-			elseif actor.tmr == 0 then
+			elseif actor.tmr==0 then
 				actor.sprt = 7	
 			end	
 			if actor.sprt>=7 then -- Set the max number frames to animate
