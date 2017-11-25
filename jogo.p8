@@ -52,7 +52,7 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 	if actor.jump then
 		actor.sprt = 8
 		actor.jump_tmr +=1
-		if actor.jump_tmr >=5 then
+		if actor.jump_tmr >=10 then
 			actor.sprt = 9
 			actor.y+=1.2
 		end	
@@ -87,9 +87,9 @@ function move_actor(bl, br) -- Sprite user input receiver, params are the left a
 				actor.sprt = 5
 			end
 		end
-	elseif btn(2) then
-		actor.y-=4	
+	elseif btn(2) then			
 		if actor.jump_tmr == 0 and actor.jump == false then
+			actor.y-=6
 			actor.jump = true
 		end
         --actor.tmr = 0  
