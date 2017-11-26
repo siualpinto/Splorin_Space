@@ -11,6 +11,7 @@ actor.h = 2
 actor.sprt = 5 -- sprite starting frame
 actor.tmr = 1 -- internal timer for managing animation
 actor.flp = false -- used for flipping the sprite
+actor.box = {x1 = 0, y1 = 0, x2 = 0, y2 = 8}
 actor.jump = false -- jump
 actor.jump_right = false
 actor.jump_left = false
@@ -92,7 +93,7 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
 			actor.flp = false -- Set deafult direction of sprite 			
-			if not solid_area(actor.x + 1, actor.y, actor.w, actor.h) then
+			if not solid_area(actor.box.x1 + 1, actor.box.x2 +1, actor.box.y1, actor.box.y2, actor.w, actor.h) then
 			actor.x+=1 -- Progress the sprite along the x axis
 			end
 			if (actor.tmr % 3 == 0) then				
@@ -108,7 +109,7 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 	elseif btn(0) then
 		if actor.x > bl then
 			actor.flp = true -- Flip the direction of the sprite
-			if not solid_area(actor.x - 1, actor.y, actor.w, actor.h) then
+			if not solid_area(actor.box.x1 - 1, actor.box.x2 -1, actor.box.y1, actor.box.y2, actor.w, actor.h) then
 			actor.x-=1 -- Move the sprite to the left
 			end
 			if (actor.tmr % 3 == 0) then
@@ -134,7 +135,7 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 		end
         --actor.tmr = 0  
 	elseif btn(3) then
-		if not solid_area(actor.y + 1, actor.y, actor.w, actor.h) then
+		if not solid_area(actor.box.x1, actor.box.x2, actor.box.y1 - 1 , actor.box.y2 - 1, actor.w, actor.h) then
 		if (actor.tmr % 3 == 0) then
 			actor.y+=1		
 			actor.sprt = 4
@@ -194,10 +195,16 @@ function _draw() -- write pixels to view at 30fps
 	--draw_lvl() -- level rendering
 	map( 0, 0, 0, 64, 16, 16)
 	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- draw the main sprite with the modified sprite properties 
+	actor.box.x1 = actor.x
+	actor.box.x2 = actor.x
+	actor.box.y1 = actor.y
+	actor.box.y2 = actor.y+8
 	--spr(ship.sprt, ship.x, ship.y, 3, 2, ship.flp) 	-- draw ship sprite	
-	print("x "..actor.x,0,10,7)
-	print("y "..actor.y,64,10,7)
-	print("-> "..actor.val,85,10,7)		
+	print("x1 "..actor.box.x1,0,10,7)
+	print("x2 "..actor.box.x2,0,20,7)
+	print("y1 "..actor.box.y1,64,10,7)
+	print("y2 "..actor.box.y2,64,20,7)	
+	print("-> "..actor.val,85,10,7)
 end
 
 --selecting ambient sound
@@ -208,12 +215,16 @@ function initsound()
 end
 
 
-function solid_area(x,y,w,h)	
+function solid_area(x1,x2,y1,y2,w,h)	
 	return 
-	solid(x-w,y-h) or
-	solid(x+w,y-h) or
-	solid(x-w,y+h) or
-	solid(x+w,y+h)
+	solid(x1-w,y1-h) or
+	solid(x2-w,y2-h) or
+	solid(x1+w,y1-h) or
+	solid(x2+w,y2-h) or
+	solid(x1-w,y1+h) or
+	solid(x2-w,y2+h) or
+	solid(x1+w,y1+h) or
+	solid(x2+w,y2+h) 
 end
 
 
