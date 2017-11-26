@@ -128,14 +128,16 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 			actor.sprt = 8
 		end
         --actor.tmr = 0  
-    elseif btn(3) then
-		actor.y+=2 		
-		actor.sprt = 4
-		if actor.flp == true then
-			actor.flp = false
-		elseif	actor.flp == false then
-			actor.flp = true
-		end	
+	elseif btn(3) then
+		if (actor.tmr % 3 == 0) then
+			actor.y+=2 		
+			actor.sprt = 4
+			if actor.flp == true then
+				actor.flp = false
+			elseif	actor.flp == false then
+				actor.flp = true
+			end	
+		end
 	elseif actor.jump_tmr != 0 then	
 	elseif btn(5) then
 		actor.sword  = true	
