@@ -206,6 +206,9 @@ function drawscene1()
 	print("y "..actor.y,34+actor.x,10+actor.y,7)	
 	print("val-> "..actor.val,0+actor.x,20+actor.y,7)
 	print("val2-> "..(actor.val2 and 'true' or 'false'),64+actor.x,20+actor.y,7)
+	if not dialogs[1].done then
+				dialog(dialogs[1])
+			end
 end
 
 
