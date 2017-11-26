@@ -29,9 +29,22 @@ function _update()
 	end
 	if scene == 1 then
 		if current_lvl.number==1 then -- define the boundries for level 1
-			bnd_left = 30
+			if actor.cavern==false then
+				bnd_left = 30
+			end
+			camera(actor.x-64,actor.y-64)
 			bnd_right = 1200
-			move_actor(bnd_left, bnd_right) -- call to user input function
+			actor.tmr_init=actor.tmr_init+1
+			if actor.tmr_init >=300 then				
+				move_actor(bnd_left, bnd_right) -- call to user input function
+			end			
+			if actor.x ==150 and actor.cavern == false then
+				music(-1,500)
+				music(8,500)
+				bnd_left = 155		
+				actor.cavern = true			
+			end	
+				
 			move_shipe()
 			move_batata()				
 		end	
@@ -49,19 +62,51 @@ function _draw()
 end
 
 function move_batata()
-	batata.tmr = batata.tmr+1 
-	if batata.tmr>=10 then -- after 1/3 of sec, jump to sprite 6
-		batata.sprt = 73
+	
+	batata1.tmr = batata1.tmr+1 
+	if batata1.tmr>=10 then -- after 1/3 of sec, jump to sprite 6
+		batata1.sprt = 70
 	end
-	if batata.tmr >= 30 then -- after 2 sec jump frame 8
-		batata.sprt = 74
-		batata.flip=true
+	if batata1.tmr >= 30 then -- after 2 sec jump frame 8
+		batata1.sprt = 71
+		batata1.flip=true
 	end
-	if batata.tmr >= 60 then -- and jump back to frame 6, 
-		batata.sprt = 73
-		batata.flip=false		
-		batata.tmr = 0 -- restart timer
+	if batata1.tmr >= 60 then -- and jump back to frame 6, 
+		batata1.sprt = 70
+		batata1.flip=false		
+		batata1.tmr = 0 -- restart timer
 	end	
+
+	batata2.tmr = batata2.tmr+1 
+	if batata2.tmr>=10 then -- after 1/3 of sec, jump to sprite 6
+		batata2.sprt = 73
+	end
+	if batata2.tmr >= 30 then -- after 2 sec jump frame 8
+		batata2.sprt = 74
+		batata2.flip=true
+	end
+	if batata2.tmr >= 60 then -- and jump back to frame 6, 
+		batata2.sprt = 73
+		batata2.flip=false		
+		batata2.tmr = 0 -- restart timer
+	end	
+
+	batata3.tmr = batata3.tmr+1 
+	if batata3.tmr>=10 then -- after 1/3 of sec, jump to sprite 6
+		batata3.sprt = 73
+	end
+	if batata3.tmr >= 30 then -- after 2 sec jump frame 8
+		batata3.sprt = 74
+		batata3.flip=true
+	end
+	if batata3.tmr >= 60 then -- and jump back to frame 6, 
+		batata3.sprt = 73
+		batata3.flip=false		
+		batata3.tmr = 0 -- restart timer
+	end	
+
+	
+
 end
 
 function drawscene0() 
@@ -93,6 +138,8 @@ function updatescene0()
 	
 	if btn(4) or btn(5) then
 		start = true
+		music(-1)
+		music(1)
 	end
 	
 	if start == true and not ship.moving then 
@@ -114,14 +161,47 @@ function drawscene1()
 		pal()
 	end
 	map( 0, 0, 0, 0, 128, 128)
-	spr(actor.sprt+arbiru_constant,actor.x,actor.y,actor.sizex,2,actor.flp) -- draw the main sprite with the modified sprite properties 
+	if btn(5) and actor.sword == true then
+		sfx(30)
+	spr(actor.sprt+arbiru_constant,actor.x,actor.y,2,2,actor.flp) -- draw the main sprite with the modified sprite properties 
+	else
+	actor.sword = false
+	spr(actor.sprt+arbiru_constant,actor.x,actor.y,1,2,actor.flp) -- draw the main sprite with the modified sprite properties 
+	end	
+	
+	if actor.x >= 228 and actor.y <= 236 and actor.y>= 70 and actor.y<=74 and actor.sword==true then
+		batata1.dead=true
+		sfx(29)
+	elseif batata1.dead == false then
+		spr(batata1.sprt, 228, 72, 1, 2,batata1.flip) 	-- draw ship sprite
+	end		
+
+	if actor.x >= 342 and actor.y <= 358 and actor.y>= 78 and actor.y<=82 and actor.sword==true then
+		batata2.dead=true
+		sfx(29)
+	elseif batata2.dead == false then
+		spr(batata2.sprt, 350, 80, 1, 2,batata2.flip) 	-- draw ship sprite	
+	end	
+
+
+	if actor.x >= 352 and actor.y <= 368 and actor.y>= 70 and actor.y<=74 and actor.sword==true then
+		batata3.dead=true
+		sfx(29)
+	elseif batata3.dead == false then		
+		spr(batata3.sprt, 360, 72, 1, 2,batata3.flip) 	-- draw ship sprite	
+	end	
+		
+
+	if actor.x >= 492 and actor.y <= 508 and actor.y>= 62 and actor.y<=66 and actor.sword==true then
+		batata4.dead=true
+		sfx(29)
+	elseif batata4.dead == false then		
+		spr(batata4.sprt, 500, 64, 1, 2,batata4.flip) 	-- draw ship sprite
+	end	
+
+	
 	spr(shipe.sprt, shipe.x, shipe.y, 3, 3, shipe.flp) 	-- draw ship sprite	
 
-	spr(batata.sprt, 228, 72, 1, 2,batata.flip) 	-- draw ship sprite	
-	spr(batata.sprt, 350, 80, 1, 2,batata.flip) 	-- draw ship sprite	
-	spr(batata.sprt, 360, 72, 1, 2,batata.flip) 	-- draw ship sprite	
-	spr(batata.sprt, 500, 64, 1, 2,batata.flip) 	-- draw ship sprite
-	
 	print("x "..actor.x,0+actor.x,10+actor.y,7)
 	print("y "..actor.y,34+actor.x,10+actor.y,7)	
 	print("val-> "..actor.val,0+actor.x,20+actor.y,7)
@@ -272,8 +352,8 @@ function updateship()
 	end
 	
 	if ship.moving then 
-		ship.y += 1
-		ship.x += 1
+		ship.y += 0.3
+		ship.x += 0.3
 		
 		if ship.timer > 5 then
   	if ship.sprt != 44 then 
@@ -338,6 +418,7 @@ actor.back = false
 actor.h = 2
 actor.sprt = 5 -- sprite starting frame
 actor.tmr = 1 -- internal timer for managing animation
+actor.tmr_init= 1
 actor.flp = false -- used for flipping the sprite
 actor.jump = false -- jump
 actor.jump_right = false
@@ -347,6 +428,7 @@ actor.deep = 15
 actor.sword = false
 actor.val = 0
 actor.val2 = false
+actor.cavern = false
 -- collide with map tiles?
 actor.cm=true
 -- collide with world bounds?
@@ -359,10 +441,29 @@ shipe.y=72
 shipe.sprt=73
 shipe.timer=0
 
-batata={}
-batata.sprt=73
-batata.flip=false
-batata.tmr=0
+batata1={}
+batata1.sprt=70
+batata1.flip=false
+batata1.tmr=0
+batata1.dead = false
+
+batata2={}
+batata2.sprt=73
+batata2.flip=false
+batata2.tmr=0
+batata2.dead = false
+
+batata3={}
+batata3.sprt=102
+batata3.flip=false
+batata3.tmr=0
+batata3.dead = false
+
+batata4={}
+batata4.sprt=73
+batata4.flip=false
+batata4.tmr=0
+batata4.dead = false
 
 current_lvl = {} -- holder for the level counter
 current_lvl.number = 0 -- initialize the level at 0
@@ -370,8 +471,8 @@ current_lvl.number = 0 -- initialize the level at 0
 function lvl_change(ln)
 	current_lvl.number = ln
 	if current_lvl.number==1 then -- code for only level 1
-		actor.x = 30 -- start sprite in the center of the level area
-		actor.y =48 -- put sprite at the base of the level
+		actor.x = 35 -- start sprite in the center of the level area
+		actor.y =80 -- put sprite at the base of the level
 	end
 end
 
@@ -421,6 +522,7 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 			actor.sprt = 10	
 		end	
 		if actor.jump_tmr >20 then
+			sfx(28)
 			actor.jump = false
 			actor.jump_tmr = 0
 		end	
@@ -463,6 +565,7 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 			elseif  btn(0)
 				actor.jump_left = true 	
 			end	]]
+			sfx(27)
 			actor.jump = true			
 			actor.sprt = 8
 		end
@@ -479,17 +582,15 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 		end
 	elseif actor.jump_tmr != 0 then	
 	elseif btn(5) then
-		actor.sword  = true
-		if actor.sprt == 11 then
-			actor.sprt+=sprite_animator(1)	
-			actor.sizex=2	
-		elseif actor.sprt == 12  then 	
-			actor.sprt+=sprite_animator(2)	
-			actor.sizex=2
-		elseif  actor.sprt>=14 then
-				actor.sprt = 11	
-				actor.sizex=1
-		end
+		actor.sword = true
+		if actor.tmr % 3 == 0 and actor.sprt !=12 then
+				actor.sprt=12				
+				actor.val = 55
+			else	
+				actor.sprt = 14		
+				actor.val = 56
+			end
+				
 		--actor.tmr = 0	
 	else
 		actor.sprt = 5
@@ -499,9 +600,8 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 	if cmap() then
 	actor.x=lx actor.y=ly
 	end
+	--actor.sizex=1
 	--actor.val=mget(actor.x/8,(actor.y)/8)
-	actor.val =scene
-	camera(actor.x-64,actor.y-64)
 end
 
 function sprite_animator(x) -- this function receives the number of frames to animate by, increaments by the supplied amount and returns the value back calling user input function
@@ -518,7 +618,7 @@ end
 --selecting ambient sound
 function initsound()
 	if current_lvl.number == 1 then
-		--music(5, 300)
+		music(0, 300)
 	end
 end
 
@@ -736,11 +836,11 @@ __sfx__
 011700003063524605306052460524625246043063524615000002460524625246043063524605000000000024625246043063524615000000000024625246043063524605000000000024625246043063524615
 011700000000000000246252460430635246050000000000246252460430635246150000000000246252460430635246050000000000246252460430635246150000000000246252460430635246050000000000
 011700000000000000246253e2353e245246251a1501b1501815018100000001e1501e1501f1501e15010100000001b1001b1501a1001a1001a1001a1501a1000000000000246253e2353e245246251a1501b150
-011e00000c5600c5010c5020c560125601256112552135650c5600c5010c5020c560125601256112552135650c5600c5010c5020c560125601256112552135650c5600c5010c5020c56012560125611255213545
+011e00000c5400c5010c5020c540125401254112532135450c5400c5010c5020c540125401254112532135450c5400c5010c5020c540125401254112532135450c5400c5010c5020c54012540125411253213525
 011e000000000000000000000000246053e2053e20524605000003e2053e20500000246053e20524605246250000000000000000000024625000002f60524625000003e2053e20500000246253e205246253e205
 011e00002f615000003e22500000186253e2053e2252f615000003e2253e225000002f6153e225186253e225000003e2053e225000002f615000003e22518625000003e2253e22500000246253e2252f6153e225
 01170000112343d2303d2303123031234312303123431220312203122031220312243122031224312103121531205312053120531200246250000030635246153060524605246250000030635246053060524605
-011e000017540175501756016560155621556115552145650c5670c5620c5620e5600f5600f561145521455217502125601256011560135621356115552155651356613562155621556216560165611655216552
+011e000017530175401755016550155521555115542145550c5570c5520c5520e5500f5500f551145421454217502125501255011550135521355115542155551355613552155521555216550165511654216542
 010200001107413070180701a0751a0002f000120000f0000b0001c0001c0000f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 010a00000063500605000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 010300001737417470167600467304675002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200
