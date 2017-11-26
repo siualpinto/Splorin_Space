@@ -6,8 +6,8 @@ actor = {} -- initalize the sprite object
 actor.x = 0 -- sprites x position
 actor.y = 0 -- sprites y position
 actor.sizex = 1
-actor.w = 0.4
-actor.h = 0.4
+actor.w = 6
+actor.h = 2
 actor.sprt = 5 -- sprite starting frame
 actor.tmr = 1 -- internal timer for managing animation
 actor.flp = false -- used for flipping the sprite
@@ -16,7 +16,7 @@ actor.jump_right = false
 actor.jump_left = false
 actor.jump_tmr = 0
 actor.sword = false
-actor.val = 3
+actor.val = 5
 -- collide with map tiles?
 actor.cm=true
 -- collide with world bounds?
@@ -53,8 +53,9 @@ end
 function move_actor(bl, br) -- sprite user input receiver, params are the left and right boundaries 	
 	local lx=actor.x
 	local ly=actor.y
-
+	
 	actor.tmr = actor.tmr+1 -- interal timer to activate waiting animations
+	--actor.val=mget(3,3)
 	
 	--[[
 	if actor.tmr>=10 then -- after 1/3 of sec, jump to sprite 6
@@ -90,8 +91,10 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
-			actor.flp = false -- Set deafult direction of sprite 
-			actor.x+=1.5 -- Progress the sprite along the x axis
+			actor.flp = false -- Set deafult direction of sprite 			
+			if not solid_area(actor.x + 1, actor.y, actor.w, actor.h) then
+			actor.x+=1 -- Progress the sprite along the x axis
+			end
 			if (actor.tmr % 3 == 0) then				
 				if actor.jump_tmr == 0 then
 					actor.sprt += sprite_animator(1) -- Animate the sprite by calling the sprite_animator function
@@ -105,7 +108,9 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 	elseif btn(0) then
 		if actor.x > bl then
 			actor.flp = true -- Flip the direction of the sprite
-			actor.x-=1.5 -- Move the sprite to the left
+			if not solid_area(actor.x - 1, actor.y, actor.w, actor.h) then
+			actor.x-=1 -- Move the sprite to the left
+			end
 			if (actor.tmr % 3 == 0) then
 				if actor.jump_tmr == 0 then
 					actor.sprt+=sprite_animator(1)
@@ -129,19 +134,20 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 		end
         --actor.tmr = 0  
 	elseif btn(3) then
+		if not solid_area(actor.y + 1, actor.y, actor.w, actor.h) then
 		if (actor.tmr % 3 == 0) then
-			actor.y+=2 		
+			actor.y+=1		
 			actor.sprt = 4
 			if actor.flp == true then
 				actor.flp = false
 			elseif	actor.flp == false then
 				actor.flp = true
 			end	
+		end	
 		end
 	elseif actor.jump_tmr != 0 then	
 	elseif btn(5) then
-		actor.sword  = true	
-		actor.val = actor.sizex	
+		actor.sword  = true
 		if actor.sprt == 11 then
 			actor.sprt+=sprite_animator(1)	
 			actor.sizex=1	
@@ -202,8 +208,7 @@ function initsound()
 end
 
 
-function solid_area(x,y,w,h)
-	
+function solid_area(x,y,w,h)	
 	return 
 	solid(x-w,y-h) or
 	solid(x+w,y-h) or
@@ -214,8 +219,8 @@ end
 
 function solid(x, y)
 	-- grab the cell value
-	actor.val=mget(x, y)	 
-	return fget(actor.val,1)
+	val=mget(x/8, (y-64)/8)	 
+	return fget(val,1)
 	
 end
 
@@ -373,7 +378,7 @@ __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
 __gff__
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000001010001010000000000000000000000010100010100000000000000000000000101000000000000000000000000000001010100000003000000
+0000000000030303000000000000000000000000000303030000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000001010001010000000000000000000000010100010100000000000000000000000101000000000000000000000000000001010100000003000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0000000000b5b5b5b5b5b5b5b5b5b5b500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
