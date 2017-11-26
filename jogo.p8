@@ -162,12 +162,8 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 	else
 		actor.sprt = 5
 		actor.sizex=1
-	end
-	if cmap() then -- reset position
-	actor.x=lx 
-	actor.y=ly
-	end
-	
+	end	
+	actor.val=mget(actor.x/8,(actor.y-64)/8)
 end
 
 function sprite_animator(x) -- this function receives the number of frames to animate by, increaments by the supplied amount and returns the value back calling user input function
@@ -206,8 +202,6 @@ function initsound()
 		--music(5, 300)
 	end
 end
-
-
 function solid_area(x,y,w,h)	
 	return 
 	solid(x-w,y-h) or
@@ -215,36 +209,11 @@ function solid_area(x,y,w,h)
 	solid(x-w,y+h) or
 	solid(x+w,y+h)
 end
-
-
 function solid(x, y)
 	-- grab the cell value
 	val=mget(x/8, (y-64)/8)	 
 	return fget(val,1)
 	
-end
-
-function cmap()
-	local ct=false
-	local cb=false
-	-- if colliding with map tiles
-	if(actor.cm) then
-		local x1=actor.x
-		local y1=actor.y
-		local x2=(actor.x+7)
-		local y2=(actor.y+7)
- 	local a=fget(mget(x1,y1),0)
- 	local b=fget(mget(x1,y2),0)
- 	local c=fget(mget(x2,y2),0)
-	local d=fget(mget(x2,y1),0)
-	ct=a or b or c or d 
-	
-	end
-	-- if colliding world bounds
-	if actor.cw then
-		cb=(actor.x<0 or actor.x+8>w or actor.y<0 or actor.y+8>h)
-	end
-	return ct or cb
 end
 
 __gfx__
