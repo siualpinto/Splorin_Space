@@ -94,7 +94,7 @@ function drawscene1()
 		pal()
 	end
 	map( 0, 0, 0, 0, 16, 16)
-	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- draw the main sprite with the modified sprite properties 
+	spr(actor.sprt,actor.x,actor.y,actor.sizex,2,actor.flp) -- draw the main sprite with the modified sprite properties 
 	--spr(ship.sprt, ship.x, ship.y, 3, 2, ship.flp) 	-- draw ship sprite	
 	print("x "..actor.x,0,10,7)
 	print("y "..actor.y,64,10,7)	
@@ -250,7 +250,9 @@ function updateship()
 		
 		if ship.timer > 5 then
   	if ship.sprt != 44 then 
-  		ship.sprt+=3
+		  ship.sprt+=3
+	elseif ship.sprt == 44 then
+			ship.sprt=	 35 
  		end
  		ship.timer=0
  	end
@@ -428,15 +430,15 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 		actor.sword  = true
 		if actor.sprt == 11 then
 			actor.sprt+=sprite_animator(1)	
-			actor.sizex=1	
+			actor.sizex=2	
 		elseif actor.sprt == 12  then 	
 			actor.sprt+=sprite_animator(2)	
-			actor.sizex=1
-		end	
-		--actor.tmr = 0
-		if actor.sprt>=14 then
-			actor.sprt = 11
-		end	
+			actor.sizex=2
+		elseif  actor.sprt>=14 then
+				actor.sprt = 11	
+				actor.sizex=1
+		end
+		--actor.tmr = 0	
 	else
 		actor.sprt = 5
 		actor.sizex=1
