@@ -88,7 +88,6 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 
 
 
-<<<<<<< HEAD
 	if btn(1) then -- Built in function that receives button input, in this case the right arrow
 		if actor.x < br then -- If sprite is within the right boundries
 			actor.flp = false -- Set deafult direction of sprite 
@@ -115,33 +114,6 @@ function move_actor(bl, br) -- sprite user input receiver, params are the left a
 					if actor.sprt>=7 then
 						actor.sprt = 5
 					end
-=======
-	if btn(1) then -- built in function that receives button input, in this case the right arrow
-		if actor.x < br then -- if sprite is within the right boundries
-			actor.flp = false -- set deafult direction of sprite 
-			if not solid_area(actor.x + 1.5,actor.y, actor.w, actor.h) then
-				actor.x+=1.5 -- progress the sprite along the x axis		
-			end
-			if actor.jump_tmr == 0 then
-				actor.sprt += sprite_animator(1) -- animate the sprite by calling the sprite_animator function
-				--actor.tmr = 0 -- reset internal timer
-				if actor.sprt>=7 then -- set the max number frames to animate
-					actor.sprt = 5 -- reset the frame number, creating a loop
-				end
-			end		
-		end
-	elseif btn(0) then
-		if actor.x > bl then
-			actor.flp = true -- flip the direction of the sprite
-			if not solid_area(actor.x - 1.5,actor.y, actor.w, actor.h) then
-			actor.x-=1.5 -- move the sprite to the left
-			end
-			if actor.jump_tmr == 0 then
-				actor.sprt+=sprite_animator(1)
-				--actor.tmr = 0
-				if actor.sprt>=7 then
-					actor.sprt = 5
->>>>>>> 66764eaa1923c521c2824c5b64ddffd3efa9facc
 				end
 			end
 		end
@@ -204,16 +176,9 @@ end
 function _update() -- main game loop called at 30fps
 	if current_lvl.number==1 then -- define the boundries for level 1
 		bnd_left = 0
-<<<<<<< HEAD
-		bnd_right = 128
-	end
-	
-	move_actor(bnd_left, bnd_right) -- Call to user input function
-=======
 		bnd_right = 120
 	end	
 	move_actor(bnd_left, bnd_right) -- call to user input function
->>>>>>> 66764eaa1923c521c2824c5b64ddffd3efa9facc
 end
 
 function _draw() -- write pixels to view at 30fps
