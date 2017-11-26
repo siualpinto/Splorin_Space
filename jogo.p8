@@ -2,6 +2,304 @@ pico-8 cartridge // http://www.pico-8.com
 version 14
 __lua__
 
+scene=0
+timer=0
+
+cam_x=0
+cam_y=0
+
+--imitial text
+startxt={}
+startxt.x=20
+startxt.y=90
+startxt.c=7
+
+function _init()
+	w=120 -- width of the game map
+	h=120 -- height of the game map
+	cls() -- clear the screen
+	lvl_change(1) -- start the game at level 1
+	initsound()
+end
+
+function _update()
+	if scene == 0 then
+		updatescene0()
+	end
+	if scene == 1 then
+		if current_lvl.number==1 then -- define the boundries for level 1
+			bnd_left = 0
+			bnd_right = 120
+		end	
+		move_actor(bnd_left, bnd_right) -- call to user input function
+	end
+end
+
+function _draw()
+	cls()	
+	if scene == 0 then
+		drawscene0()
+	elseif scene == 1 then
+		drawscene1()		
+	end
+end
+
+function drawscene0() 
+	skybackground()
+	drawship()
+	
+	if not start then
+ 	print('sploring space', 35, 20, 7)
+ 	
+ 	if timer > 20 then 
+ 		if startxt.c == 7 then 
+ 			startxt.c = 6
+ 		else
+ 			startxt.c = 7
+ 		end
+ 		timer=0
+ 	end
+ 	
+ 	print('press any key to start',
+ 		startxt.x, startxt.y, startxt.c) 
+ else
+ 	drawsplosion()
+ end
+	timer+=1
+end
+
+function updatescene0()
+	movebackground()
+	
+	if btn(4) or btn(5) then
+		start = true
+	end
+	
+	if start == true and not ship.moving then 
+		splosion(ship.x,ship.y,5,200)
+	end
+	
+	if start == true then 
+		updatesplosion()
+		updateship()
+	end
+end
+
+function drawscene1()
+--fade stuff
+	fade-=1
+	if fade > -10 then
+		fade0(fade)
+		fade=0
+		pal()
+	end
+	map( 0, 0, 0, 0, 16, 16)
+	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- draw the main sprite with the modified sprite properties 
+	--spr(ship.sprt, ship.x, ship.y, 3, 2, ship.flp) 	-- draw ship sprite	
+	print("x "..actor.x,0,10,7)
+	print("y "..actor.y,64,10,7)	
+	print("val-> "..actor.val,0,20,7)
+	print("val2-> "..(actor.val2 and 'true' or 'false'),64,20,7)
+end
+
+-->8
+--splosion--
+
+sparks={}
+
+for i=1, 200 do
+		add(sparks, {
+			x=0, y=0, velx=0, vely=0,
+			r=0, alive=false, mass=0,
+			c=10})
+end
+
+function splosion(x,y,r,particles)
+	local selected=0
+
+	for i=1, #sparks do
+		if not sparks[i].alive then
+			sparks[i].x = x
+			sparks[i].y = y
+			sparks[i].velx = -1 + rnd(2)
+			sparks[i].vely = -1 + rnd(2)
+			sparks[i].mass = 0.5 + rnd(2)
+			sparks[i].r = 0.5 + rnd(r)
+			sparks[i].alive = true
+			sparks[i].c = 8
+			selected +=1
+
+			if selected == particles then
+			break end
+		end
+	end
+end
+
+function updatesplosion()
+ 	for i=1, #sparks do
+ 	if sparks[i].alive then
+ 		sparks[i].x += sparks[i].velx / sparks[i].mass
+ 		sparks[i].y += sparks[i].vely / sparks[i].mass
+ 		sparks[i].r -= 0.1
+ 		if sparks[i].r < 0.1 then
+ 			sparks[i].alive = false
+ 		end
+ 
+ 		if sparks[i].r > 5 and sparks[i].r < 8 then
+ 			sparks[i].c = 10
+ 		elseif sparks[i].r < 5 and sparks[i].r > 3 then
+ 			sparks[i].c = 9
+ 		else
+ 			sparks[i].c = 8
+ 		end
+ 	end
+ end
+end
+
+function drawsplosion()
+	for i=1, #sparks do
+		if sparks[i].alive then
+			circfill(
+				sparks[i].x,
+				sparks[i].y,
+				sparks[i].r,
+				sparks[i].c)
+		end
+	end
+end
+-->8
+--stars n shit--
+
+stars = {}
+planets = {}
+ssprite = 0
+psprite = 0
+start = false
+shiptimer = 0
+
+for i=1, 50 do
+	if i%2 == 0 then
+		ssprite = 192
+		psprite = 208
+	else
+		ssprite = 194
+		psprite = 209
+	end
+	add(stars, {
+		x=rnd(200), y=rnd(120), sprite=ssprite})
+
+	if i < 5 then
+ 	add(planets, {
+ 	 sprite=psprite,	x=rnd(200), y=rnd(120)})
+	end
+end
+
+function movebackground()
+	if not start then
+ 	for i=1, #stars do 
+ 		stars[i].x -= 1
+ 		if stars[i].x < -10 then 
+ 			stars[i].x = 130 + rnd(120)
+ 		end
+		end
+	
+ 	for i=1, #planets do
+ 		planets[i].x -= 1
+ 		if planets[i].x < -10 then 
+ 			planets[i].x = 130 + rnd(120)
+ 		end
+ 	end
+	end
+end
+
+function skybackground()
+	for i=1, #stars do
+		spr(stars[i].sprite, stars[i].x, stars[i].y)
+	end
+
+	for i=1, #planets do
+		spr(planets[i].sprite, planets[i].x, planets[i].y)
+	end
+end
+-->8
+--ship--
+ship={}
+ship.x=50
+ship.y=60
+ship.sprt=32
+ship.w=3
+ship.h=2
+ship.moving=false
+ship.timer=0
+
+fade=0
+
+function drawship()
+	spr(ship.sprt, ship.x, ship.y,
+		ship.w, ship.h, true, false)
+end
+
+function updateship()
+	if start then
+		ship.moving = true
+	end
+	
+	if ship.moving then 
+		ship.y += 1
+		ship.x += 1
+		
+		if ship.timer > 5 then
+  	if ship.sprt != 44 then 
+  		ship.sprt+=3
+ 		end
+ 		ship.timer=0
+ 	end
+	end	
+	
+	if ship.y > 128 then
+		ship.moving = false
+		fade0(fade)
+		fade+=1	
+		
+		if fade > 10 then 
+			scene=1
+		end
+	end
+	ship.timer+=1
+end
+
+-->8
+--fade thing
+local fadetable0={
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{1,1,1,1,1,1,1,0,0,0,0,0,0,0,0},
+{2,2,2,2,2,2,1,1,1,0,0,0,0,0,0},
+{3,3,3,3,3,3,1,1,1,0,0,0,0,0,0},
+{4,4,4,2,2,2,2,2,1,1,0,0,0,0,0},
+{5,5,5,5,5,1,1,1,1,1,0,0,0,0,0},
+{6,6,13,13,13,13,5,5,5,5,1,1,1,0,0},
+{7,6,6,6,6,13,13,13,5,5,5,1,1,0,0},
+{8,8,8,8,2,2,2,2,2,2,0,0,0,0,0},
+{9,9,9,4,4,4,4,4,4,5,5,0,0,0,0},
+{10,10,9,9,9,4,4,4,5,5,5,5,0,0,0},
+{11,11,11,3,3,3,3,3,3,3,0,0,0,0,0},
+{12,12,12,12,12,3,3,1,1,1,1,1,1,0,0},
+{13,13,13,5,5,5,5,1,1,1,1,1,0,0,0},
+{14,14,14,13,4,4,2,2,2,2,2,1,1,0,0},
+{15,15,6,13,13,13,5,5,5,5,5,1,1,0,0}
+}
+
+function fade0(i)
+	for c=0,15 do
+  if flr(i+1)>=16 then
+			pal(c,0)
+		else
+			pal(c,fadetable0[c+1][flr(i+1)])
+		end
+ end
+end
+
+-------------------------------------------------------
 actor = {} -- initalize the sprite object 
 actor.x = 0 -- sprites x position
 actor.y = 0 -- sprites y position
@@ -23,13 +321,6 @@ actor.cm=true
 -- collide with world bounds?
 actor.cw=true
 
-ship = {} -- initalize the sprite object 
-ship.x = 10 -- sprites x position
-ship.y = 101 -- sprites y position
-ship.sprt = 32 -- sprite starting frame
-ship.flp = false -- used for flipping the sprite
-ship.tmr = 1 -- internal timer for managing animation
-
 
 current_lvl = {} -- holder for the level counter
 current_lvl.number = 0 -- initialize the level at 0
@@ -42,13 +333,6 @@ function lvl_change(ln)
 	end
 end
 
-function _init() 
-	w=120 -- width of the game map
-	h=120 -- height of the game map
-	cls() -- clear the screen
-	lvl_change(1) -- start the game at level 1
-	initsound()
-end
 	
 -- character move function
 function move_actor(bl, br) -- sprite user input receiver, params are the left and right boundaries 	
@@ -173,26 +457,6 @@ end
 function draw_lvl() -- abstracting the built in draw function to render the required level
 	if current_lvl.number==1 then 
 	end
-end
-
-function _update() -- main game loop called at 30fps
-	if current_lvl.number==1 then -- define the boundries for level 1
-		bnd_left = 0
-		bnd_right = 120
-	end	
-	move_actor(bnd_left, bnd_right) -- call to user input function
-end
-
-function _draw() -- write pixels to view at 30fps
-	cls() -- clear thew screen
-	--draw_lvl() -- level rendering
-	map( 0, 0, 0, 0, 16, 16)
-	spr(actor.sprt,actor.x,actor.y,1,2,actor.flp) -- draw the main sprite with the modified sprite properties 
-	--spr(ship.sprt, ship.x, ship.y, 3, 2, ship.flp) 	-- draw ship sprite	
-	print("x "..actor.x,0,10,7)
-	print("y "..actor.y,64,10,7)	
-	print("val-> "..actor.val,0,20,7)
-	print("val2-> "..(actor.val2 and 'true' or 'false'),64,20,7)
 end
 
 --selecting ambient sound
@@ -327,6 +591,19 @@ __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00070000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00777000006660000000700000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00070000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000cc000000ee7000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00bccc00002e7e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00bbcc000022ee000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000bb000007220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000070070000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -344,19 +621,6 @@ __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
 __gff__
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
